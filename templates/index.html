@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Sentiment Analyzer</title>
+    
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            text-align: center;
+        }
+        .dark-mode {
+            background-color: #121212;
+            color: #f8f9fa;
+        }
+        .dark-mode .card, .dark-mode .comment {
+            background-color: #1e1e1e;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 40px 20px;
+        }
+
+        .form-card, .stats-container, .comments-container {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .video-preview iframe {
+            width: 100%;
+            height: 350px;
+            border-radius: 10px;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: space-between;
+            text-align: center;
+        }
+
+        .stats-box {
+            flex: 1;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            margin: 5px;
+        }
+        .positive { background-color: #28a745; }
+        .neutral { background-color: #ffc107; }
+        .negative { background-color: #dc3545; }
+
+        .comment {
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+        .positive { background-color: #d4edda; color: #155724; }
+        .neutral { background-color: #fff3cd; color: #856404; }
+        .negative { background-color: #f8d7da; color: #721c24; }
+
+        .btn-dark-mode {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <button class="btn btn-dark btn-dark-mode" onclick="toggleDarkMode()">🌙 Toggle Dark Mode</button>
+
+    <div class="container">
+        <h1 class="mb-4">📊 YouTube Sentiment Analyzer</h1>
+
+        <div class="form-card">
+            <form method="POST">
+                <input type="text" name="youtube_url" class="form-control mb-3" placeholder="Enter YouTube Video URL" required>
+                <button type="submit" class="btn btn-primary w-100">Analyze Sentiment</button>
+            </form>
+        </div>
+
+        {% if video_id %}
+        <div class="video-preview">
+            <h3>🎬 Video Preview</h3>
+            <iframe src="https://www.youtube.com/embed/{{ video_id }}" allowfullscreen></iframe>
+        </div>
+        {% endif %}
+
+        {% if results %}
+        <div class="stats-container d-flex">
+            <div class="stats-box positive">😊 Positive: {{ sentiments['Positive'] }}</div>
+            <div class="stats-box neutral">😐 Neutral: {{ sentiments['Neutral'] }}</div>
+            <div class="stats-box negative">😠 Negative: {{ sentiments['Negative'] }}</div>
+        </div>
+
+        <h3 class="mt-4">💬 Sentiment Analysis Results</h3>
+        <div class="comments-container">
+            {% for res in results %}
+                <p class="comment {% if res.sentiment == 'Positive' %}positive{% elif res.sentiment == 'Negative' %}negative{% else %}neutral{% endif %}">
+                    {{ res.text }} - <strong>{{ res.sentiment }}</strong>
+                </p>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('dark-mode', document.body.classList.contains('dark-mode'));
+        }
+
+        if (localStorage.getItem('dark-mode') === 'true') {
+            document.body.classList.add('dark-mode');
+        }
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
