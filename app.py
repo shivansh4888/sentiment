@@ -8,7 +8,7 @@ from urllib.parse import urlparse, parse_qs
 app = Flask(__name__)
 
 # Replace with your actual YouTube API key
-YOUTUBE_API_KEY = "AIzaSyDI11qFh5P05eQ-ExwE6AfRq2sBHBAY6qI"
+
 
 analyzer = SentimentIntensityAnalyzer()
 
